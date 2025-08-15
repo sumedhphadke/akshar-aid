@@ -427,13 +427,17 @@ function addVisualFeedback(text) {
 let tileTouchStartTime = 0;
 let tileTouchStartY = 0;
 let isTileScrolling = false;
+let currentTouchedTile = null;
 
 function handleTouchStart(event) {
     tileTouchStartTime = Date.now();
     tileTouchStartY = event.touches[0].clientY;
     isTileScrolling = false;
+    currentTouchedTile = this;
     
-    // Don't prevent default - allow scrolling
+    console.log('Touch start on:', this.textContent, 'Class:', this.className);
+    
+    // Visual feedback
     this.style.transform = 'scale(0.95)';
     this.classList.add('touched');
 }
@@ -444,14 +448,38 @@ function handleTouchEnd(event) {
     const touchEndY = event.changedTouches[0].clientY;
     const touchDistance = Math.abs(touchEndY - tileTouchStartY);
     
-    // If it's a quick tap (not a scroll), handle the tile action
-    if (touchDuration < 300 && touchDistance < 10 && !isTileScrolling) {
-        // This was a tap, not a scroll
-        event.preventDefault();
-    }
+    console.log('Touch end on:', this.textContent, 'Duration:', touchDuration, 'Distance:', touchDistance, 'Scrolling:', isTileScrolling);
     
+    // Reset visual state
     this.style.transform = 'scale(1)';
     this.classList.remove('touched');
+    
+    // If it's a quick tap (not a scroll), trigger the action
+    if (touchDuration < 300 && touchDistance < 10 && !isTileScrolling) {
+        console.log('Processing tap for:', this.textContent);
+        // This was a tap, not a scroll - trigger the click action
+        event.preventDefault();
+        
+        // Get the tile type and content to determine what action to take
+        const tileContent = this.textContent;
+        const tileClass = this.className;
+        
+        // Trigger the appropriate action based on tile type
+        if (tileClass.includes('consonant-tile')) {
+            console.log('Adding consonant:', tileContent);
+            addConsonant(tileContent);
+        } else if (tileClass.includes('vowel-tile')) {
+            console.log('Adding vowel:', tileContent);
+            addVowel(tileContent);
+        } else if (tileClass.includes('word-tile')) {
+            console.log('Selecting word:', tileContent);
+            selectWord(tileContent);
+        }
+    } else {
+        console.log('Not processing tap - duration:', touchDuration, 'distance:', touchDistance, 'scrolling:', isTileScrolling);
+    }
+    
+    currentTouchedTile = null;
 }
 
 function handleTouchMove(event) {
@@ -461,6 +489,11 @@ function handleTouchMove(event) {
     // If user moved finger significantly, mark as scrolling
     if (touchDistance > 5) {
         isTileScrolling = true;
+        // Reset visual state if scrolling
+        if (currentTouchedTile) {
+            currentTouchedTile.style.transform = 'scale(1)';
+            currentTouchedTile.classList.remove('touched');
+        }
     }
 }
 
@@ -468,6 +501,7 @@ function handleTouchCancel(event) {
     this.style.transform = 'scale(1)';
     this.classList.remove('touched');
     isTileScrolling = false;
+    currentTouchedTile = null;
 }
 
 // Keyboard navigation support
@@ -529,39 +563,16 @@ function resetSuggestionTimeout() {
 document.addEventListener('click', resetSuggestionTimeout);
 document.addEventListener('touchstart', resetSuggestionTimeout);
 
-// Test speech synthesis function
-function testSpeech() {
-    console.log('Testing speech synthesis...');
-    console.log('Available voices:', speechSynthesis.getVoices());
-    
-    if ('speechSynthesis' in window) {
-        const testUtterance = new SpeechSynthesisUtterance('Hello, this is a test');
-        testUtterance.lang = 'en-US';
-        testUtterance.volume = 1.0;
-        testUtterance.rate = 0.8;
-        
-        testUtterance.onstart = () => console.log('Test speech started');
-        testUtterance.onend = () => console.log('Test speech ended');
-        testUtterance.onerror = (e) => console.error('Test speech error:', e.error);
-        
-        speechSynthesis.speak(testUtterance);
-    } else {
-        console.log('Speech synthesis not supported');
-    }
-}
 
-// Add test button to the page
+
+// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    // Add test button after the speak button
-    const speakBtn = document.querySelector('.speak-btn');
-    if (speakBtn) {
-        const testBtn = document.createElement('button');
-        testBtn.className = 'action-btn';
-        testBtn.style.background = '#ff9800';
-        testBtn.textContent = 'Test Speech';
-        testBtn.onclick = testSpeech;
-        
-        // Insert test button after speak button
-        speakBtn.parentNode.insertBefore(testBtn, speakBtn.nextSibling);
-    }
+    createConsonantTiles();
+    createVowelTiles();
+    createCommonWordTiles();
+    updateDisplay();
+    
+    // Log touch support for debugging
+    console.log('Touch events supported:', 'ontouchstart' in window);
+    console.log('Max touch points:', navigator.maxTouchPoints || 'Unknown');
 });
