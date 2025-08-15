@@ -17,29 +17,7 @@ body {
     padding: 20px;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
-    border-radius: 0 0 15px 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
 
-header h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
-}
 
 .display-area {
     background: white;
@@ -48,7 +26,7 @@ header h1 {
     margin-bottom: 30px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     position: sticky;
-    top: 120px;
+    top: 20px;
     z-index: 999;
 }
 
@@ -299,9 +277,7 @@ header h1 {
         padding: 15px;
     }
     
-    header h1 {
-        font-size: 2.5rem;
-    }
+
     
     .tiles-container {
         grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
