@@ -182,7 +182,13 @@ function createCommonWordTiles() {
 
 // Add consonant to current word
 function addConsonant(consonant) {
-    currentWord += consonant;
+    // If we already have a consonant and no vowel, replace it
+    // This allows users to change their mind about which consonant to use
+    if (currentWord.length === 1 && isConsonant(currentWord[0])) {
+        currentWord = consonant;
+    } else {
+        currentWord += consonant;
+    }
     updateDisplay();
     showSuggestions();
     addVisualFeedback(consonant);
@@ -190,10 +196,26 @@ function addConsonant(consonant) {
 
 // Add vowel to current word
 function addVowel(vowel) {
-    currentWord += vowel;
+    // If we have a consonant, attach the vowel to it
+    if (currentWord.length > 0 && isConsonant(currentWord[currentWord.length - 1])) {
+        currentWord += vowel;
+    } else {
+        // If no consonant, just add the vowel (for standalone vowels like अ, आ)
+        currentWord += vowel;
+    }
     updateDisplay();
     showSuggestions();
     addVisualFeedback(vowel);
+}
+
+// Check if a character is a consonant
+function isConsonant(char) {
+    return marathiConsonants.includes(char);
+}
+
+// Check if a character is a vowel
+function isVowel(char) {
+    return marathiVowels.includes(char);
 }
 
 // Select a complete word
@@ -211,7 +233,39 @@ function updateDisplay() {
     if (currentWord === '') {
         displayElement.innerHTML = '<span class="placeholder">तुमचा संदेश येथे दिसेल...</span>';
     } else {
-        displayElement.textContent = currentWord;
+        // Highlight the last consonant if it's waiting for a vowel
+        let displayHTML = '';
+        for (let i = 0; i < currentWord.length; i++) {
+            const char = currentWord[i];
+            if (isConsonant(char) && i === currentWord.length - 1) {
+                // Last character is a consonant - highlight it to show it's waiting for a vowel
+                displayHTML += `<span class="waiting-vowel">${char}</span>`;
+            } else {
+                displayHTML += char;
+            }
+        }
+        displayElement.innerHTML = displayHTML;
+    }
+    
+    // Update tile states to show which consonant is active
+    updateTileStates();
+}
+
+// Update tile states to show which consonant is active
+function updateTileStates() {
+    // Remove previous active states
+    document.querySelectorAll('.consonant-tile').forEach(tile => {
+        tile.classList.remove('active-consonant');
+    });
+    
+    // If last character is a consonant, highlight it
+    if (currentWord.length > 0 && isConsonant(currentWord[currentWord.length - 1])) {
+        const lastChar = currentWord[currentWord.length - 1];
+        const activeTile = Array.from(document.querySelectorAll('.consonant-tile'))
+            .find(tile => tile.textContent === lastChar);
+        if (activeTile) {
+            activeTile.classList.add('active-consonant');
+        }
     }
 }
 
