@@ -350,17 +350,60 @@ function speakWord() {
     if (currentWord === '') return;
     
     if ('speechSynthesis' in window) {
+        // Stop any currently playing speech
+        speechSynthesis.cancel();
+        
         const utterance = new SpeechSynthesisUtterance(currentWord);
-        utterance.lang = 'mr-IN'; // Marathi language
+        
+        // Try Marathi first, fallback to English if not available
+        utterance.lang = 'mr-IN';
         utterance.rate = 0.8; // Slightly slower for clarity
+        utterance.volume = 1.0; // Maximum volume
+        utterance.pitch = 1.0; // Normal pitch
+        
+        // Add event listeners for debugging
+        utterance.onstart = () => {
+            console.log('Speech started:', currentWord);
+            // Visual feedback
+            const displayElement = document.getElementById('currentWord');
+            displayElement.style.background = '#e8f5e8';
+        };
+        
+        utterance.onend = () => {
+            console.log('Speech ended');
+            // Reset visual feedback
+            const displayElement = document.getElementById('currentWord');
+            displayElement.style.background = '#f9f9f9';
+        };
+        
+        utterance.onerror = (event) => {
+            console.error('Speech error:', event.error);
+            alert(`Speech error: ${event.error}. Trying English...`);
+            
+            // Fallback to English
+            const englishUtterance = new SpeechSynthesisUtterance(currentWord);
+            englishUtterance.lang = 'en-US';
+            englishUtterance.rate = 0.8;
+            englishUtterance.volume = 1.0;
+            speechSynthesis.speak(englishUtterance);
+        };
+        
         speechSynthesis.speak(utterance);
         
-        // Visual feedback
-        const displayElement = document.getElementById('currentWord');
-        displayElement.style.background = '#e8f5e8';
+        // Fallback: if no speech after 2 seconds, try English
         setTimeout(() => {
-            displayElement.style.background = '#f9f9f9';
-        }, 1000);
+            if (speechSynthesis.speaking) {
+                console.log('Still speaking...');
+            } else {
+                console.log('No speech detected, trying English fallback');
+                const englishUtterance = new SpeechSynthesisUtterance(currentWord);
+                englishUtterance.lang = 'en-US';
+                englishUtterance.rate = 0.8;
+                englishUtterance.volume = 1.0;
+                speechSynthesis.speak(englishUtterance);
+            }
+        }, 2000);
+        
     } else {
         alert('Speech synthesis not supported in this browser');
     }
@@ -485,3 +528,40 @@ function resetSuggestionTimeout() {
 // Reset timeout when user interacts
 document.addEventListener('click', resetSuggestionTimeout);
 document.addEventListener('touchstart', resetSuggestionTimeout);
+
+// Test speech synthesis function
+function testSpeech() {
+    console.log('Testing speech synthesis...');
+    console.log('Available voices:', speechSynthesis.getVoices());
+    
+    if ('speechSynthesis' in window) {
+        const testUtterance = new SpeechSynthesisUtterance('Hello, this is a test');
+        testUtterance.lang = 'en-US';
+        testUtterance.volume = 1.0;
+        testUtterance.rate = 0.8;
+        
+        testUtterance.onstart = () => console.log('Test speech started');
+        testUtterance.onend = () => console.log('Test speech ended');
+        testUtterance.onerror = (e) => console.error('Test speech error:', e.error);
+        
+        speechSynthesis.speak(testUtterance);
+    } else {
+        console.log('Speech synthesis not supported');
+    }
+}
+
+// Add test button to the page
+document.addEventListener('DOMContentLoaded', function() {
+    // Add test button after the speak button
+    const speakBtn = document.querySelector('.speak-btn');
+    if (speakBtn) {
+        const testBtn = document.createElement('button');
+        testBtn.className = 'action-btn';
+        testBtn.style.background = '#ff9800';
+        testBtn.textContent = 'Test Speech';
+        testBtn.onclick = testSpeech;
+        
+        // Insert test button after speak button
+        speakBtn.parentNode.insertBefore(testBtn, speakBtn.nextSibling);
+    }
+});
