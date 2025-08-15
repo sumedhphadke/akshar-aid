@@ -148,6 +148,11 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     user-select: none;
     touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .consonant-tile:hover, .vowel-tile:hover, .word-tile:hover {

@@ -107,8 +107,10 @@ function createConsonantTiles() {
         tile.setAttribute('aria-label', `Add consonant ${consonant}`);
         
         tile.addEventListener('click', () => addConsonant(consonant));
-        tile.addEventListener('touchstart', handleTouchStart);
-        tile.addEventListener('touchend', handleTouchEnd);
+        tile.addEventListener('touchstart', handleTouchStart, { passive: false });
+        tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+        tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+        tile.addEventListener('touchcancel', handleTouchCancel, { passive: false });
         
         container.appendChild(tile);
     });
@@ -125,8 +127,10 @@ function createVowelTiles() {
         tile.setAttribute('aria-label', `Add vowel ${vowel}`);
         
         tile.addEventListener('click', () => addVowel(vowel));
-        tile.addEventListener('touchstart', handleTouchStart);
-        tile.addEventListener('touchend', handleTouchEnd);
+        tile.addEventListener('touchstart', handleTouchStart, { passive: false });
+        tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+        tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+        tile.addEventListener('touchcancel', handleTouchCancel, { passive: false });
         
         container.appendChild(tile);
     });
@@ -143,8 +147,10 @@ function createCommonWordTiles() {
         tile.setAttribute('aria-label', `Select word ${word}`);
         
         tile.addEventListener('click', () => selectWord(word));
-        tile.addEventListener('touchstart', handleTouchStart);
-        tile.addEventListener('touchend', handleTouchEnd);
+        tile.addEventListener('touchstart', handleTouchStart, { passive: false });
+        tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+        tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+        tile.addEventListener('touchcancel', handleTouchCancel, { passive: false });
         
         basicNeedsContainer.appendChild(tile);
     });
@@ -158,8 +164,10 @@ function createCommonWordTiles() {
         tile.setAttribute('aria-label', `Select word ${word}`);
         
         tile.addEventListener('click', () => selectWord(word));
-        tile.addEventListener('touchstart', handleTouchStart);
-        tile.addEventListener('touchend', handleTouchEnd);
+        tile.addEventListener('touchstart', handleTouchStart, { passive: false });
+        tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+        tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+        tile.addEventListener('touchcancel', handleTouchCancel, { passive: false });
         
         medicalWordsContainer.appendChild(tile);
     });
@@ -173,8 +181,10 @@ function createCommonWordTiles() {
         tile.setAttribute('aria-label', `Select word ${word}`);
         
         tile.addEventListener('click', () => selectWord(word));
-        tile.addEventListener('touchstart', handleTouchStart);
-        tile.addEventListener('touchend', handleTouchEnd);
+        tile.addEventListener('touchstart', handleTouchStart, { passive: false });
+        tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+        tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+        tile.addEventListener('touchcancel', handleTouchCancel, { passive: false });
         
         emotionWordsContainer.appendChild(tile);
     });
@@ -415,14 +425,50 @@ function addVisualFeedback(text) {
 }
 
 // Touch event handlers for mobile devices
+let tileTouchStartTime = 0;
+let tileTouchStartY = 0;
+let isTileScrolling = false;
+
 function handleTouchStart(event) {
-    event.preventDefault();
+    tileTouchStartTime = Date.now();
+    tileTouchStartY = event.touches[0].clientY;
+    isTileScrolling = false;
+    
+    // Don't prevent default - allow scrolling
     this.style.transform = 'scale(0.95)';
+    this.classList.add('touched');
 }
 
 function handleTouchEnd(event) {
-    event.preventDefault();
+    const touchEndTime = Date.now();
+    const touchDuration = touchEndTime - tileTouchStartTime;
+    const touchEndY = event.changedTouches[0].clientY;
+    const touchDistance = Math.abs(touchEndY - tileTouchStartY);
+    
+    // If it's a quick tap (not a scroll), handle the tile action
+    if (touchDuration < 300 && touchDistance < 10 && !isTileScrolling) {
+        // This was a tap, not a scroll
+        event.preventDefault();
+    }
+    
     this.style.transform = 'scale(1)';
+    this.classList.remove('touched');
+}
+
+function handleTouchMove(event) {
+    const currentY = event.touches[0].clientY;
+    const touchDistance = Math.abs(currentY - tileTouchStartY);
+    
+    // If user moved finger significantly, mark as scrolling
+    if (touchDistance > 5) {
+        isTileScrolling = true;
+    }
+}
+
+function handleTouchCancel(event) {
+    this.style.transform = 'scale(1)';
+    this.classList.remove('touched');
+    isTileScrolling = false;
 }
 
 // Keyboard navigation support
