@@ -14,24 +14,25 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
 }
 
 
 
 .display-area {
     background: white;
-    border-radius: 15px;
+    border-radius: 0 0 15px 15px;
     padding: 15px;
     margin-bottom: 20px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     position: -webkit-sticky; /* Safari support */
     position: sticky;
-    top: 20px;
+    top: 0;
     z-index: 999;
     /* Ensure it works on mobile */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    margin-top: 0;
 }
 
 .current-word {
@@ -288,12 +289,14 @@ body {
     
     /* Mobile sticky fallback */
     .display-area {
-        position: relative;
-        top: auto;
+        position: sticky;
+        top: 0;
         margin-bottom: 15px;
+        margin-top: 0;
         /* Ensure it's always visible on mobile */
         background: white;
         border: 2px solid #e0e0e0;
+        border-radius: 0 0 15px 15px;
     }
     
     .tiles-container {
@@ -320,10 +323,12 @@ body {
 @media (max-width: 480px) {
     /* Ensure display area is always visible on small mobile */
     .display-area {
-        position: relative;
-        top: auto;
+        position: sticky;
+        top: 0;
         margin-bottom: 10px;
+        margin-top: 0;
         padding: 12px;
+        border-radius: 0 0 15px 15px;
     }
     
     .tiles-container {
