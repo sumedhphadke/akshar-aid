@@ -25,9 +25,13 @@ body {
     padding: 15px;
     margin-bottom: 20px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: -webkit-sticky; /* Safari support */
     position: sticky;
     top: 20px;
     z-index: 999;
+    /* Ensure it works on mobile */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .current-word {
@@ -277,7 +281,15 @@ body {
         padding: 15px;
     }
     
-
+    /* Mobile sticky fallback */
+    .display-area {
+        position: relative;
+        top: auto;
+        margin-bottom: 15px;
+        /* Ensure it's always visible on mobile */
+        background: white;
+        border: 2px solid #e0e0e0;
+    }
     
     .tiles-container {
         grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
@@ -301,6 +313,14 @@ body {
 }
 
 @media (max-width: 480px) {
+    /* Ensure display area is always visible on small mobile */
+    .display-area {
+        position: relative;
+        top: auto;
+        margin-bottom: 10px;
+        padding: 12px;
+    }
+    
     .tiles-container {
         grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
         gap: 8px;
@@ -339,5 +359,27 @@ body {
     
     .current-word {
         border-color: #000;
+    }
+}
+
+/* Mobile touch enhancements */
+@media (hover: none) and (pointer: coarse) {
+    .display-area {
+        /* Better touch experience on mobile */
+        touch-action: manipulation;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .current-word {
+        /* Larger touch target on mobile */
+        min-height: 70px;
+        padding: 20px;
+    }
+    
+    .action-btn {
+        /* Larger buttons for mobile */
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        min-height: 44px; /* iOS recommended minimum */
     }
 }
