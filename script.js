@@ -16,34 +16,73 @@ const marathiVowels = [
     'ऋ', 'ए', 'ऐ', 'ओ', 'औ'
 ];
 
-// Common Marathi Words (सामान्य शब्द)
+// Categorized Marathi Words
+const wordCategories = {
+    basicNeeds: [
+        // Basic greetings and responses
+        'नमस्कार', 'धन्यवाद', 'कृपया', 'माफ करा',
+        'होय', 'नाही', 'ठीक आहे', 'समजले',
+        
+        // Basic needs & physical sensations
+        'दुखत', 'दुखणे', 'वेदना', 'पीडा', 'सुजले',
+        'शौचालय', 'पायखाना', 'पाणी', 'पिणे', 'जेवण', 'भुकेले', 'तहान',
+        'थंड', 'गरम', 'थकले', 'झोप', 'विश्रांती', 'आराम',
+        'श्वास', 'श्वासोच्छ्वास', 'श्वास कमी', 'श्वास येत नाही',
+        'सुन्न', 'खाज', 'चक्कर', 'कमजोर', 'जड',
+        
+        // Basic actions
+        'पाणी', 'जेवण', 'झोप', 'उठणे', 'बसणे', 'चालणे',
+        'मी', 'तू', 'आपण', 'ते', 'ती',
+        'आज', 'काल', 'उद्या', 'आता'
+    ],
+    
+    medical: [
+        'आयसीयू', 'रुग्णालय', 'डॉक्टर', 'नर्स', 'औषध', 'दवा',
+        'सुई', 'नळी', 'लाईन', 'ऑक्सिजन', 'यंत्र', 'श्वासयंत्र',
+        'हृदय', 'फुफ्फुसे', 'मूत्रपिंड', 'संसर्ग', 'रक्त'
+    ],
+    
+    emotions: [
+        'माहित नाही', 'हरवले', 'गोंधळ', 'भीती', 'घाबरले', 'आठवत',
+        'चिंतित', 'काळजी', 'चिंता', 'दुःखी', 'एकटे'
+    ]
+};
+
+// Flatten all words for backward compatibility
 const commonMarathiWords = [
-    'नमस्कार', 'धन्यवाद', 'कृपया', 'माफ करा',
-    'होय', 'नाही', 'ठीक आहे', 'समजले',
-    'पाणी', 'जेवण', 'झोप', 'उठणे',
-    'बसणे', 'चालणे', 'दुखत', 'बरे',
-    'मी', 'तू', 'आपण', 'ते', 'ती',
-    'आज', 'काल', 'उद्या', 'आता'
+    ...wordCategories.basicNeeds,
+    ...wordCategories.medical,
+    ...wordCategories.emotions
 ];
 
 // Word completion dictionary (basic Marathi words)
 const wordDictionary = {
-    'न': ['नमस्कार', 'नाही', 'नवीन', 'नदी', 'नगर'],
-    'म': ['मी', 'माझे', 'माझा', 'माझी', 'मदत'],
-    'प': ['पाणी', 'पुस्तक', 'पैसा', 'पाऊस', 'पक्षी'],
-    'ज': ['जेवण', 'जागा', 'जन्म', 'जीवन', 'जवळ'],
-    'घ': ['घर', 'घडी', 'घोडा', 'घाट', 'घाण'],
-    'द': ['दुखत', 'दिवस', 'देश', 'दार', 'दूर'],
-    'ब': ['बसणे', 'बरे', 'बाजार', 'बाग', 'बस'],
-    'क': ['कृपया', 'काल', 'काम', 'काळ', 'कळ'],
-    'त': ['तू', 'ते', 'ती', 'त्याचे', 'तिचे'],
-    'स': ['समजले', 'सांगा', 'सर्व', 'सुंदर', 'सुरू'],
-    'ह': ['होय', 'हा', 'ही', 'हे', 'होते'],
-    'आ': ['आपण', 'आज', 'आता', 'आणि', 'आले'],
-    'व': ['वेळ', 'वाट', 'वाटत', 'वर्ष', 'वाढ'],
-    'ल': ['लागत', 'लिहा', 'लोक', 'लहान', 'लांब'],
-    'य': ['येथे', 'येत', 'योग्य', 'योग', 'येणे'],
-    'र': ['राहत', 'राजा', 'रस्ता', 'रंग', 'रात्र']
+    'न': ['नमस्कार', 'नाही', 'नवीन', 'नदी', 'नगर', 'नळी'],
+    'म': ['मी', 'माझे', 'माझा', 'माझी', 'मदत', 'मशीन'],
+    'प': ['पाणी', 'पुस्तक', 'पैसा', 'पाऊस', 'पक्षी', 'पायखाना'],
+    'ज': ['जेवण', 'जागा', 'जन्म', 'जीवन', 'जवळ', 'जड'],
+    'घ': ['घर', 'घडी', 'घोडा', 'घाट', 'घाण', 'घाबरले'],
+    'द': ['दुखत', 'दिवस', 'देश', 'दार', 'दूर', 'दुःखी'],
+    'ब': ['बसणे', 'बरे', 'बाजार', 'बाग', 'बस', 'भुकेले'],
+    'क': ['कृपया', 'काल', 'काम', 'काळ', 'कळ', 'काळजी', 'कमजोर'],
+    'त': ['तू', 'ते', 'ती', 'त्याचे', 'तिचे', 'तहान', 'थकले', 'थंड'],
+    'स': ['समजले', 'सांगा', 'सर्व', 'सुंदर', 'सुरू', 'सुई', 'सुन्न'],
+    'ह': ['होय', 'हा', 'ही', 'हे', 'होते', 'हृदय', 'हरवले'],
+    'आ': ['आपण', 'आज', 'आता', 'आणि', 'आले', 'आराम', 'आयसीयू'],
+    'व': ['वेळ', 'वाट', 'वाटत', 'वर्ष', 'वाढ', 'वेदना', 'विश्रांती'],
+    'ल': ['लागत', 'लिहा', 'लोक', 'लहान', 'लांब', 'लाईन'],
+    'य': ['येथे', 'येत', 'योग्य', 'योग', 'येणे', 'यंत्र'],
+    'र': ['राहत', 'राजा', 'रस्ता', 'रंग', 'रात्र', 'रक्त'],
+    'श': ['श्वास', 'श्वासोच्छ्वास', 'शौचालय', 'श्वासयंत्र'],
+    'औ': ['औषध'],
+    'ड': ['डॉक्टर'],
+    'फ': ['फुफ्फुसे'],
+    'मू': ['मूत्रपिंड'],
+    'सं': ['संसर्ग'],
+    'ग': ['गरम', 'गोंधळ'],
+    'भ': ['भीती'],
+    'च': ['चिंतित', 'चिंता', 'चक्कर', 'चालणे'],
+    'ख': ['खाज']
 };
 
 let currentWord = '';
@@ -95,9 +134,9 @@ function createVowelTiles() {
 
 // Create common word tiles
 function createCommonWordTiles() {
-    const container = document.getElementById('commonWordsContainer');
-    
-    commonMarathiWords.forEach(word => {
+    // Create tiles for basic needs
+    const basicNeedsContainer = document.getElementById('basicNeedsContainer');
+    wordCategories.basicNeeds.forEach(word => {
         const tile = document.createElement('button');
         tile.className = 'word-tile';
         tile.textContent = word;
@@ -107,7 +146,37 @@ function createCommonWordTiles() {
         tile.addEventListener('touchstart', handleTouchStart);
         tile.addEventListener('touchend', handleTouchEnd);
         
-        container.appendChild(tile);
+        basicNeedsContainer.appendChild(tile);
+    });
+    
+    // Create tiles for medical words
+    const medicalWordsContainer = document.getElementById('medicalWordsContainer');
+    wordCategories.medical.forEach(word => {
+        const tile = document.createElement('button');
+        tile.className = 'word-tile';
+        tile.textContent = word;
+        tile.setAttribute('aria-label', `Select word ${word}`);
+        
+        tile.addEventListener('click', () => selectWord(word));
+        tile.addEventListener('touchstart', handleTouchStart);
+        tile.addEventListener('touchend', handleTouchEnd);
+        
+        medicalWordsContainer.appendChild(tile);
+    });
+    
+    // Create tiles for emotion words
+    const emotionWordsContainer = document.getElementById('emotionWordsContainer');
+    wordCategories.emotions.forEach(word => {
+        const tile = document.createElement('button');
+        tile.className = 'word-tile';
+        tile.textContent = word;
+        tile.setAttribute('aria-label', `Select word ${word}`);
+        
+        tile.addEventListener('click', () => selectWord(word));
+        tile.addEventListener('touchstart', handleTouchStart);
+        tile.addEventListener('touchend', handleTouchEnd);
+        
+        emotionWordsContainer.appendChild(tile);
     });
 }
 
