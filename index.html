@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मराठी संवाद - Marathi Communication</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>मराठी संवाद</h1>
+            <p class="subtitle">Marathi Communication Tool</p>
+        </header>
+
+        <div class="display-area">
+            <div class="current-word" id="currentWord">
+                <span class="placeholder">तुमचा संदेश येथे दिसेल...</span>
+            </div>
+            <div class="actions">
+                <button class="action-btn clear-btn" onclick="clearWord()">साफ करा</button>
+                <button class="action-btn speak-btn" onclick="speakWord()">बोला</button>
+            </div>
+        </div>
+
+        <div class="consonants-grid">
+            <h2>व्यंजने (Consonants)</h2>
+            <div class="tiles-container" id="consonantsContainer">
+                <!-- Consonants will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="vowels-section">
+            <h2>स्वर (Vowels)</h2>
+            <div class="vowels-container" id="vowelsContainer">
+                <!-- Vowels will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="common-words">
+            <h2>सामान्य शब्द (Common Words)</h2>
+            <div class="common-words-container" id="commonWordsContainer">
+                <!-- Common words will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="suggestions" id="suggestions">
+            <h3>शब्द सूचना (Word Suggestions)</h3>
+            <div class="suggestions-list" id="suggestionsList"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
