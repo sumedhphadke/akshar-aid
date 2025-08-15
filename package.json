@@ -1,0 +1,26 @@
+{
+  "name": "akshar-aid",
+  "version": "1.0.0",
+  "description": "Marathi Communication Tool for elderly non-verbal users",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'Static site - open index.html in browser'",
+    "build": "echo 'Static site - no build needed'",
+    "dev": "echo 'Static site - open index.html in browser'"
+  },
+  "keywords": [
+    "marathi",
+    "communication",
+    "accessibility",
+    "elderly",
+    "non-verbal",
+    "healthcare"
+  ],
+  "author": "Sumedh Phadke",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sumedhphadke/akshar-aid.git"
+  },
+  "homepage": "https://github.com/sumedhphadke/akshar-aid#readme"
+}
